@@ -1,5 +1,5 @@
-#include "Codeur.h"
-#include "DC_Motor.h"
+#include "Encoder.h"
+#include "DC_Motor_Encoder.h"
 
 #include "pinout.h"
 
@@ -11,10 +11,10 @@ float kp_factor = 15.0;
 float ki_factor = 5.0;
 float kd_factor = 0.0;
 
-Codeur objet_codeur = Codeur(encoderA_mot1, encoderB_mot1, tops_codeur, 1);
-Codeur* codeur = &objet_codeur;
+Encoder objet_codeur = Encoder(encoderA_mot1, encoderB_mot1, tops_codeur, 1);
+Encoder* Encoder = &objet_codeur;
 
-DC_Motor moteur = DC_Motor(mot1_plus, mot1_moins, mot1_pwm, mot1_enable, codeur, kp_factor, ki_factor, kd_factor);
+DC_Motor_Encoder moteur = DC_Motor_Encoder(mot1_plus, mot1_moins, mot1_pwm, mot1_enable, Encoder, kp_factor, ki_factor, kd_factor);
 
 long compteur = 0;
 int index = 0;
@@ -25,9 +25,9 @@ void setup ()
   //Initialize Serial Monitor
   Serial.begin(SERIAL_TO_PC_BAUDRATE);
 
-  // On initialise le codeur
-  Serial.println("Init codeur...");
-  codeur->init_codeur([]{codeur->tic_detector();});
+  // On initialise le Encoder
+  Serial.println("Init Encoder...");
+  Encoder->init_codeur([]{Encoder->tic_detector();});
 }
 
 

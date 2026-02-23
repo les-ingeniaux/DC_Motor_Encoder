@@ -1,12 +1,12 @@
-#ifndef Codeur_h
-#define Codeur_h
+#ifndef Encoder_h
+#define Encoder_h
 
 #include <Arduino.h>
 
-class Codeur
+class Encoder
 {
   public:
-    Codeur(unsigned int pinA, unsigned int pinB, int tops_per_tour, bool inv_sign);
+    Encoder(unsigned int pinA, unsigned int pinB, int tops_per_tour, bool inv_sign);
 
     void tic_detector();
     void init_codeur(void (*ISR_callback)(void));

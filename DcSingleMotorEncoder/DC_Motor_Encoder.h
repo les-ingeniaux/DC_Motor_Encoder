@@ -1,13 +1,13 @@
-#ifndef DC_Motor_h
-#define DC_Motor_h
+#ifndef DC_Motor_Encoder_h
+#define DC_Motor_Encoder_h
 
 #include "Arduino.h" 
-#include "Codeur.h"
+#include "Encoder.h"
 
-class DC_Motor 
+class DC_Motor_Encoder 
 {
 public:
-	DC_Motor(int pinA, int pinB, int pinPWM, int pinEnable, Codeur* codeur_moteur, float kp_factor = 70.0, float ki_factor = 10.0, float kd_factor = 15.0);
+	DC_Motor_Encoder(int pinA, int pinB, int pinPWM, int pinEnable, Encoder* codeur_moteur, float kp_factor = 70.0, float ki_factor = 10.0, float kd_factor = 15.0);
 
 	void stopMotor();
 	void releaseMotor();
@@ -34,7 +34,7 @@ private:
 	float _max_vitesse = 5.5; // rps
 	float _max_acceleration = 2.5; // rps²
 
-	Codeur* _codeur_moteur;
+	Encoder* _codeur_moteur;
 
 	int _commande_PWM;
 	float _raw_speed_setpoint;

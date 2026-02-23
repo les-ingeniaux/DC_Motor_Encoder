@@ -1,6 +1,6 @@
-#include "Codeur.h"
+#include "Encoder.h"
 
-Codeur::Codeur(unsigned int pinA, unsigned int pinB, int tops_per_tour, bool inv_sign)
+Encoder::Encoder(unsigned int pinA, unsigned int pinB, int tops_per_tour, bool inv_sign)
 {
   _total_pulses = 0;
   _pinA = pinA;
@@ -9,7 +9,7 @@ Codeur::Codeur(unsigned int pinA, unsigned int pinB, int tops_per_tour, bool inv
   _tops_per_tour = tops_per_tour;
 }
 
-void Codeur::init_codeur(void (*ISR_callback)(void))
+void Encoder::init_codeur(void (*ISR_callback)(void))
 {
   pinMode(_pinA, INPUT);
   pinMode(_pinB, INPUT);
@@ -19,12 +19,12 @@ void Codeur::init_codeur(void (*ISR_callback)(void))
   attachInterrupt(digitalPinToInterrupt(_pinA), ISR_callback, RISING);
 }
 
-void Codeur::reset_codeur()
+void Encoder::reset_codeur()
 {
   _total_pulses = 0;
 }
 
-void Codeur::tic_detector()
+void Encoder::tic_detector()
 {
   _prev_encoder_timer = _encoder_timer;
   _encoder_timer = micros();
@@ -55,7 +55,7 @@ void Codeur::tic_detector()
   _prev_total_pulses = _total_pulses;    
 }
 
-long Codeur::get_encoder_tics()
+long Encoder::get_encoder_tics()
 {
     noInterrupts();            // Disable interrupts
     long tics = _total_pulses; // Copy safely
@@ -63,17 +63,17 @@ long Codeur::get_encoder_tics()
     return tics;
 }
 
-int Codeur::get_tops_per_tour()
+int Encoder::get_tops_per_tour()
 {
   return _tops_per_tour;
 }
 
-float Codeur::get_raw_encoder_speed()
+float Encoder::get_raw_encoder_speed()
 {
   return _raw_encoder_speed;
 }
 
-float Codeur::get_encoder_filtered_speed()
+float Encoder::get_encoder_filtered_speed()
 {
   if (micros() - _encoder_timer > 2.0f / (min_vitesse * _tops_per_tour) * seconds_to_micro )
   {

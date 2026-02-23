@@ -1,7 +1,7 @@
 #include "Arduino.h"
-#include "DC_Motor.h"
+#include "DC_Motor_Encoder.h"
 
-DC_Motor::DC_Motor(int pinA, int pinB, int pinPWM, int pinEnable, Codeur* codeur_moteur, float kp_factor, float ki_factor, float kd_factor) 
+DC_Motor_Encoder::DC_Motor_Encoder(int pinA, int pinB, int pinPWM, int pinEnable, Encoder* codeur_moteur, float kp_factor, float ki_factor, float kd_factor) 
 {
 	pinMode(pinA, OUTPUT);
 	pinMode(pinB, OUTPUT);
@@ -33,34 +33,34 @@ DC_Motor::DC_Motor(int pinA, int pinB, int pinPWM, int pinEnable, Codeur* codeur
 	_isFinished = true;
 }
 
-int DC_Motor::getMotorTops()
+int DC_Motor_Encoder::getMotorTops()
 {
 	return _codeur_moteur->get_encoder_tics();
 }
 
-void DC_Motor::reset_encoder()
+void DC_Motor_Encoder::reset_encoder()
 {
   _codeur_moteur->reset_codeur();
 }
 
-float DC_Motor::getMotorSpeed()
+float DC_Motor_Encoder::getMotorSpeed()
 {
 	return _codeur_moteur->get_encoder_filtered_speed();
 }
 
-float DC_Motor::getMotorSpeedSetpoint()
+float DC_Motor_Encoder::getMotorSpeedSetpoint()
 {
 	return _speed_setpoint;
 }
 
 
-float DC_Motor::getMotorSpeedError()
+float DC_Motor_Encoder::getMotorSpeedError()
 {
 	return _error;
 }
 
 
-void DC_Motor::stopMotor()
+void DC_Motor_Encoder::stopMotor()
 {
 	digitalWrite(_pinA, HIGH);
 	digitalWrite(_pinB, HIGH);
@@ -69,7 +69,7 @@ void DC_Motor::stopMotor()
 	_integral_error = 0.0;
 }
 
-void DC_Motor::releaseMotor()
+void DC_Motor_Encoder::releaseMotor()
 {
 	digitalWrite(_pinEnable, LOW);
 	digitalWrite(_pinA, LOW);
@@ -79,7 +79,7 @@ void DC_Motor::releaseMotor()
 	_integral_error = 0.0;
 }
 
-void DC_Motor::moveMotor(int power)
+void DC_Motor_Encoder::moveMotor(int power)
 {
 	_commande_PWM = power;
 	
@@ -104,7 +104,7 @@ void DC_Motor::moveMotor(int power)
 
 }
 
-float DC_Motor::filterSpeedSetpoint(float raw_speed_setpoint)
+float DC_Motor_Encoder::filterSpeedSetpoint(float raw_speed_setpoint)
 {
 	_max_new_speed_setpoint = _prev_speed_setpoint + _max_acceleration / 1000.0 * _mot_timer_diff_ms;
 	_min_new_speed_setpoint = _prev_speed_setpoint - _max_acceleration / 1000.0 * _mot_timer_diff_ms;
@@ -113,7 +113,7 @@ float DC_Motor::filterSpeedSetpoint(float raw_speed_setpoint)
 	return filtered_speed_setpoint;
 }
 
-void DC_Motor::controlMotorSpeed(float raw_speed_setpoint)
+void DC_Motor_Encoder::controlMotorSpeed(float raw_speed_setpoint)
 {
 	_raw_speed_setpoint = raw_speed_setpoint;
 	_mot_timer_ms = millis();
@@ -155,12 +155,12 @@ void DC_Motor::controlMotorSpeed(float raw_speed_setpoint)
 
 }
 
-int DC_Motor::getMotorPWM()
+int DC_Motor_Encoder::getMotorPWM()
 {
 	return _commande_PWM;
 }
 
-void DC_Motor::doRevolutionsBlocking(int number_of_revs, int PWM)
+void DC_Motor_Encoder::doRevolutionsBlocking(int number_of_revs, int PWM)
 {
 	bool isFinished = false;
 	_integral_error = 0;
@@ -179,7 +179,7 @@ void DC_Motor::doRevolutionsBlocking(int number_of_revs, int PWM)
 
 }
 
-void DC_Motor::doRevolutionsSpeedBlocking(int number_of_revs, float speed_setpoint)
+void DC_Motor_Encoder::doRevolutionsSpeedBlocking(int number_of_revs, float speed_setpoint)
 {
 	bool isFinished = false;
 	_integral_error = 0;
@@ -197,7 +197,7 @@ void DC_Motor::doRevolutionsSpeedBlocking(int number_of_revs, float speed_setpoi
 	stopMotor();
 }
 
-bool DC_Motor::hasFinishedRevolutionsNonBlocking(int number_of_revs)
+bool DC_Motor_Encoder::hasFinishedRevolutionsNonBlocking(int number_of_revs)
 {
 	// bool isFinished = false;
 
@@ -216,7 +216,7 @@ bool DC_Motor::hasFinishedRevolutionsNonBlocking(int number_of_revs)
 	return _isFinished;
 }
 
-void DC_Motor::displayStatus()
+void DC_Motor_Encoder::displayStatus()
 {
   String affichage_valeurs;
 
