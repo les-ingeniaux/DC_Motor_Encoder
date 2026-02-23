@@ -11,7 +11,7 @@ float kp_factor = 15.0;
 float ki_factor = 5.0;
 float kd_factor = 0.0;
 
-Encoder objet_codeur = Encoder(encoderA_mot1, encoderB_mot1, tops_codeur, 1);
+Encoder objet_codeur = Encoder(encoderA_mot1, encoderB_mot1, tops_codeur, true);
 Encoder* Encoder = &objet_codeur;
 
 DC_Motor_Encoder moteur = DC_Motor_Encoder(mot1_plus, mot1_moins, mot1_pwm, mot1_enable, Encoder, kp_factor, ki_factor, kd_factor);
