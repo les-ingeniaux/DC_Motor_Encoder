@@ -6,12 +6,15 @@ DC_Motor_Encoder::DC_Motor_Encoder(int pinA, int pinB, int pinPWM, int pinEnable
 	pinMode(pinA, OUTPUT);
 	pinMode(pinB, OUTPUT);
 	pinMode(pinPWM, OUTPUT);
-	pinMode(pinEnable, OUTPUT);
+
+	if (pinEnable != false)
+		pinMode(pinEnable, OUTPUT);
 
 	digitalWrite(pinA, LOW);
 	digitalWrite(pinB, LOW);
 	analogWrite(pinPWM, 0);
-	digitalWrite(pinEnable, LOW);
+	if (pinEnable != false)
+		digitalWrite(pinEnable, LOW);
 	
 	_pinA = pinA;
 	_pinB = pinB;
@@ -31,6 +34,16 @@ DC_Motor_Encoder::DC_Motor_Encoder(int pinA, int pinB, int pinPWM, int pinEnable
 	_integral_error = 0.0;
 	_prev_mot_timer_ms = 0;	
 	_isFinished = true;
+}
+
+void DC_Motor_Encoder::setMotorMaxSpeed(float vitesse)
+{
+	_max_vitesse = vitesse;
+}
+
+void DC_Motor_Encoder::setMotorMaxAcceleration(float acceleration)
+{
+	_max_acceleration = acceleration;
 }
 
 int DC_Motor_Encoder::getMotorTops()
@@ -71,7 +84,8 @@ void DC_Motor_Encoder::stopMotor()
 
 void DC_Motor_Encoder::releaseMotor()
 {
-	digitalWrite(_pinEnable, LOW);
+	if (_pinEnable != false)
+		digitalWrite(_pinEnable, LOW);
 	digitalWrite(_pinA, LOW);
 	digitalWrite(_pinB, LOW);
 
@@ -83,7 +97,8 @@ void DC_Motor_Encoder::moveMotor(int power)
 {
 	_commande_PWM = power;
 	
-	digitalWrite(_pinEnable, HIGH);
+	if (_pinEnable != false)
+		digitalWrite(_pinEnable, HIGH);
 
 	if (_commande_PWM > 0)
 	{

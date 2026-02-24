@@ -12,6 +12,8 @@ public:
 	void stopMotor();
 	void releaseMotor();
 	void moveMotor(int power);
+	void setMotorMaxSpeed(float vitesse);
+	void setMotorMaxAcceleration(float acceleration);
 	int getMotorTops();
 	void reset_encoder();
 	int getMotorPWM();
@@ -31,8 +33,8 @@ private:
 	int _pinPWM;
 	int _pinEnable;
 	float _min_vitesse = 0.1; // rps
-	float _max_vitesse = 5.5; // rps
-	float _max_acceleration = 2.5; // rps²
+	float _max_vitesse = 6.5; // rps - Valeur par défaut à remplacer par une valeur spécifique à votre moteur!
+	float _max_acceleration = 2.5; // rps² - Valeur par défaut à remplacer par une valeur spécifique à votre application!
 
 	Encoder* _codeur_moteur;
 
