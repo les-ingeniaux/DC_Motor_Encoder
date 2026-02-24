@@ -52,6 +52,7 @@ private:
 	long int _mot_timer_diff_ms;
 
 	int _max_PWM = 255;
+	int _min_PWM = 10;
 	float _kp_factor;
 	float _ki_factor;
 	float _kd_factor;

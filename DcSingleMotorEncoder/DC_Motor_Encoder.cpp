@@ -178,14 +178,35 @@ int DC_Motor_Encoder::getMotorPWM()
 void DC_Motor_Encoder::doRevolutionsBlocking(int number_of_revs, int PWM)
 {
 	bool isFinished = false;
+	long totalTops = number_of_revs * _codeur_moteur->get_tops_per_tour();
+	long remainingTops = totalTops;
+	int slowDownLimit = _codeur_moteur->get_tops_per_tour() * (PWM / 50 + 0.5);
+	int reducedPWM = abs(PWM);
+	
+	bool direction = true;
+
+	if (number_of_revs < 0)
+		direction = false;
+
 	_integral_error = 0;
 	reset_encoder();
-	int avance = _codeur_moteur->get_tops_per_tour() * PWM / 1500; // paramètre pour corriger l'inertie à l'arrêt
+	int tolerance = 1; // paramètre pour définir si le moteur est arrivé à l'objectif
 	
 	while (!isFinished)
 	{
-		moveMotor(PWM);
-		if (abs(getMotorTops()) >= (number_of_revs * _codeur_moteur->get_tops_per_tour() - avance))
+		remainingTops = abs(totalTops - getMotorTops());
+
+		if (remainingTops < slowDownLimit)
+			reducedPWM = max(_min_PWM, (PWM * remainingTops) / slowDownLimit + (_min_PWM * (slowDownLimit - remainingTops)) / slowDownLimit);
+		else
+			reducedPWM = PWM;
+
+		if (direction)
+			moveMotor(reducedPWM);
+		else
+			moveMotor(-reducedPWM);
+		
+		if (remainingTops <= tolerance)
 			isFinished = true;		
 		displayStatus();
 	}
@@ -196,16 +217,41 @@ void DC_Motor_Encoder::doRevolutionsBlocking(int number_of_revs, int PWM)
 
 void DC_Motor_Encoder::doRevolutionsSpeedBlocking(int number_of_revs, float speed_setpoint)
 {
+	// Probablement à utiliser avec une limite de vitesse maximum !
+	// Non testé de manière exhaustive
+	
 	bool isFinished = false;
+	long totalTops = number_of_revs * _codeur_moteur->get_tops_per_tour();
+	long remainingTops = totalTops;
+	int slowDownLimit = _codeur_moteur->get_tops_per_tour() * (8 * speed_setpoint /_max_vitesse + 0.5);
+	float reduced_speed_setpoint = abs(speed_setpoint);
+	
+	bool direction = true;
+
+	if (number_of_revs < 0)
+		direction = false;
+
 	_integral_error = 0;
 	reset_encoder();
-	int avance = _codeur_moteur->get_tops_per_tour() * speed_setpoint / 100; // paramètre pour corriger l'inertie à l'arrêt
+	int tolerance = 10; // paramètre pour définir si le moteur est arrivé à l'objectif
 	
 	while (!isFinished)
 	{
-		controlMotorSpeed(speed_setpoint);
-		if (abs(getMotorTops()) >= (number_of_revs * _codeur_moteur->get_tops_per_tour() - avance))
+		remainingTops = abs(totalTops - getMotorTops());
+
+		if (remainingTops < slowDownLimit)
+			reduced_speed_setpoint = max(0.3, (speed_setpoint * remainingTops) / slowDownLimit + (_min_vitesse * (slowDownLimit - remainingTops)) / slowDownLimit);
+		else
+			reduced_speed_setpoint = speed_setpoint;
+
+		if (direction)
+			controlMotorSpeed(reduced_speed_setpoint);
+		else
+			controlMotorSpeed(-reduced_speed_setpoint);
+		
+		if (remainingTops <= tolerance)
 			isFinished = true;		
+
 		displayStatus();
 	}
 

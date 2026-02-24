@@ -5,7 +5,7 @@
 
 #define SERIAL_TO_PC_BAUDRATE 115200
 
-int tops_codeur = 585;
+int tops_codeur = 634;
 float consigne_vitesse = 0.0;
 float kp_factor = 15.0;
 float ki_factor = 85.0;
@@ -48,6 +48,9 @@ void loop()
   
   // La consigne de vitesse est appliquée
   moteur.controlMotorSpeed(consigne_vitesse);
+
+  // moteur.doRevolutionsSpeedBlocking(-5, 1.0);
+  // delay(3000);
 
   // En alternative, on peut commander le moteur avec un PWM fixé
   //  moteur.moveMotor(255);
