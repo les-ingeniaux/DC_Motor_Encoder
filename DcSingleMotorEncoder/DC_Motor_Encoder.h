@@ -24,7 +24,7 @@ public:
 	void controlMotorSpeed(float speed_setpoint);
 	void doRevolutionsBlocking(int number_of_revs, int PWM=100);
 	void doRevolutionsSpeedBlocking(int number_of_revs, float speed_setpoint=1.0);
-	bool hasFinishedRevolutionsNonBlocking(int number_of_revs);
+	bool hasFinishedRevolutionsNonBlocking(int number_of_revs, float speed_setpoint);
 	void displayStatus();
 	
 private:
@@ -42,8 +42,10 @@ private:
 	float _raw_speed_setpoint;
 	float _speed_setpoint;
 	float _prev_speed_setpoint;
+	float _reduced_speed_setpoint;
 	float _max_new_speed_setpoint;
 	float _min_new_speed_setpoint;
+	float _min_speed_setpoint = 0.3; // rps	
 	float _integral_error;
 	float _error;
 	float _prev_error;
@@ -56,6 +58,14 @@ private:
 	float _kp_factor;
 	float _ki_factor;
 	float _kd_factor;
+
+	int _tolerance = 1;
+	bool _move_direction = true;
+	long _remainingTops = 0;
+	long _totalTops = 0;
+	int _slowDownLimit = 0;
+	float _minSlowDownLimit = 0.5;
+	int _slowDownFactor = 4;
 
 	bool _isFinished;
 };

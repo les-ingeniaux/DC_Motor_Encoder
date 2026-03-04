@@ -11,7 +11,7 @@ float kp_factor = 15.0;
 float ki_factor = 85.0;
 float kd_factor = 0.0;
 
-Encoder objet_codeur = Encoder(encoderA_mot_PAMI_1, encoderB_mot_PAMI_1, tops_codeur, true);
+Encoder objet_codeur = Encoder(encoderA_mot_PAMI_1, encoderB_mot_PAMI_1, tops_codeur, encoder_mot_PAMI_1_inversion);
 Encoder* Encoder = &objet_codeur;
 
 DC_Motor_Encoder moteur = DC_Motor_Encoder(mot_PAMI_1_plus, mot_PAMI_1_moins, mot_PAMI_1_pwm, mot_PAMI_1_enable, Encoder, kp_factor, ki_factor, kd_factor);
@@ -38,16 +38,16 @@ void setup ()
 void loop()
 {
   // Cette boucle permet de choisir une nouvelle consigne de vitesse toutes les 3 secondes
-  if (millis() - compteur > 3000)
-  {
-    compteur = millis();
-    index = (index + 1) % 8;
-    consigne_vitesse = consignes[index];
-    Serial.println(consigne_vitesse);
-  }
+  // if (millis() - compteur > 3000)
+  // {
+  //   compteur = millis();
+  //   index = (index + 1) % 8;
+  //   consigne_vitesse = consignes[index];
+  //   Serial.println(consigne_vitesse);
+  // }
   
   // La consigne de vitesse est appliquée
-  moteur.controlMotorSpeed(consigne_vitesse);
+  // moteur.controlMotorSpeed(consigne_vitesse);
 
   // moteur.doRevolutionsSpeedBlocking(-5, 1.0);
   // delay(3000);
@@ -56,18 +56,19 @@ void loop()
   //  moteur.moveMotor(255);
 
   // Pour afficher les informations du moteur
-  moteur.displayStatus();
+  // moteur.displayStatus();
 
   delay(20);
 
   // En alternative, utiliser une commande qui permet de faire tourner le moteur pendant un nombre de révolutions fixé
-  // while (!moteur.hasFinishedRevolutionsNonBlocking(2))
-  // {
-	//   moteur.controlMotorSpeed(1.5);
-  //   moteur.displayStatus();
-  // }
-  // moteur.stopMotor();
+  int numberOfRevolutions = 10;
+  float speed_setpoint = 2.5;
+  while (!moteur.hasFinishedRevolutionsNonBlocking(numberOfRevolutions, speed_setpoint))
+  {
+    moteur.displayStatus();
+  }
+  moteur.stopMotor();
   
-  // delay(2000);
+  delay(2000);
 
 }
