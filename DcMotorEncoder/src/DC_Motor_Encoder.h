@@ -39,6 +39,7 @@ private:
 	Encoder* _codeur_moteur;
 
 	int _commande_PWM;
+	float _current_speed;
 	float _raw_speed_setpoint;
 	float _speed_setpoint;
 	float _prev_speed_setpoint;

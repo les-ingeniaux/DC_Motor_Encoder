@@ -152,15 +152,17 @@ void DC_Motor_Encoder::controlMotorSpeed(float raw_speed_setpoint)
 	}
 	else
 	{
-		if (abs(getMotorSpeed()) < _min_vitesse) // if speed is zero and the setpoint higher (when power is cutoff), to avoid saturating the integral 
+		_current_speed = getMotorSpeed();
+
+		if (abs(_current_speed) < _min_vitesse) // if speed is zero and the setpoint higher (when power is cutoff), to avoid saturating the integral 
 		{
 			_integral_error = 0.0;
 		}
 
 		_speed_setpoint = max(-_max_vitesse, min(_max_vitesse, _speed_setpoint));
 
-		_error = (_speed_setpoint - getMotorSpeed());
-		_integral_error = _integral_error + (_speed_setpoint - getMotorSpeed()) * _mot_timer_diff_ms / 1000.0;
+		_error = (_speed_setpoint - _current_speed);
+		_integral_error = _integral_error + (_speed_setpoint - _current_speed) * _mot_timer_diff_ms / 1000.0;
 		_commande_PWM = min(_max_PWM, max(-_max_PWM, ffwd_PWM + _error * _kp_factor + _integral_error * _ki_factor + (_error - _prev_error) / _mot_timer_diff_ms * _kd_factor * 1000.0 ));  
 		_prev_error = _error;
 	}
