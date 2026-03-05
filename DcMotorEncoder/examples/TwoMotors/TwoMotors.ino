@@ -43,30 +43,7 @@ void setup ()
 
 void loop()
 {
-  // Cette boucle permet de choisir une nouvelle consigne de vitesse toutes les 3 secondes
-  // if (millis() - compteur > 3000)
-  // {
-  //   compteur = millis();
-  //   index = (index + 1) % 8;
-  //   consigne_vitesse = consignes[index];
-  //   Serial.println(consigne_vitesse);
-  // }
-  
-  // La consigne de vitesse est appliquée
-  // moteur.controlMotorSpeed(consigne_vitesse);
 
-  // moteur.doRevolutionsSpeedBlocking(-5, 1.0);
-  // delay(3000);
-
-  // En alternative, on peut commander le moteur avec un PWM fixé
-  //  moteur.moveMotor(255);
-
-  // Pour afficher les informations du moteur
-  // moteur.displayStatus();
-
-  delay(20);
-
-  // En alternative, utiliser une commande qui permet de faire tourner le moteur pendant un nombre de révolutions fixé
   int numberOfRevolutions = 10;
   float speed_setpoint = 1.5;
   while (!moteur1.hasFinishedRevolutionsNonBlocking(numberOfRevolutions, speed_setpoint) && !moteur2.hasFinishedRevolutionsNonBlocking(numberOfRevolutions, speed_setpoint))
