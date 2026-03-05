@@ -20,6 +20,10 @@ class Encoder
   
     volatile long _total_pulses;
     volatile long _prev_total_pulses;
+
+    long _total_pulses_for_speed = 0;
+    long _prev_total_pulses_for_speed = 0;
+
     long int _encoder_timer = 0;
     long int _prev_encoder_timer = 0;
     long int _encoder_timer_diff = 0;
