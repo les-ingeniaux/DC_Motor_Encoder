@@ -6,7 +6,7 @@
 class Encoder
 {
   public:
-    Encoder(unsigned int pinA, unsigned int pinB, int tops_per_tour, bool inv_sign);
+    Encoder(unsigned int pinA, unsigned int pinB, int tops_per_tour, bool inv_sign = false, int edgeType = RISING);
 
     void tic_detector();
     void init_codeur(void (*ISR_callback)(void));
@@ -33,7 +33,8 @@ class Encoder
     
     unsigned int _pinA;
     unsigned int _pinB;
-    bool _inv_sign = false;
+    bool _inv_sign;
+    int _edgeType;
 
     const float min_vitesse = 0.1; // rps
 

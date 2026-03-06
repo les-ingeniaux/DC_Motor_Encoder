@@ -1,11 +1,12 @@
 #include "Encoder.h"
 
-Encoder::Encoder(unsigned int pinA, unsigned int pinB, int tops_per_tour, bool inv_sign)
+Encoder::Encoder(unsigned int pinA, unsigned int pinB, int tops_per_tour, bool inv_sign, int edgeType)
 {
   _total_pulses = 0;
   _pinA = pinA;
   _pinB = pinB;
   _inv_sign = inv_sign;
+  _edgeType = edgeType;
   _tops_per_tour = tops_per_tour;
 
   _total_pulses_for_speed = 0;
@@ -19,7 +20,10 @@ void Encoder::init_codeur(void (*ISR_callback)(void))
 
   reset_codeur();
 
-  attachInterrupt(digitalPinToInterrupt(_pinA), ISR_callback, RISING);
+  if (_edgeType == RISING)
+    attachInterrupt(digitalPinToInterrupt(_pinA), ISR_callback, RISING);
+  if (_edgeType == FALLING)
+    attachInterrupt(digitalPinToInterrupt(_pinA), ISR_callback, FALLING);  
 }
 
 void Encoder::reset_codeur()
@@ -29,8 +33,6 @@ void Encoder::reset_codeur()
 
 void Encoder::tic_detector()
 {
-
-
   if (!digitalRead(_pinB))
   {
     if (_inv_sign)

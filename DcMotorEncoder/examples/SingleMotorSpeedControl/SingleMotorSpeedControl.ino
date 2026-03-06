@@ -7,7 +7,7 @@
 
 int tops_codeur = 440;
 float consigne_vitesse = 0.0;
-float kp_factor = 15.0;
+float kp_factor = 30.0;
 float ki_factor = 50.0;
 float kd_factor = 0.0;
 
@@ -19,7 +19,7 @@ DC_Motor_Encoder moteur4 = DC_Motor_Encoder(mot4_plus, mot4_moins, mot4_pwm, mot
 
 long compteur = 0;
 int index = 0;
-float consignes[8] = {0.5, 0.8, 3.0, 2.2, 0.0, -0.7, -1.0, 0.5};
+float consignes[8] = {-0.5, -0.8, 3.0, 2.2, 0.0, -0.7, -1.0, 0.5};
 
 void setup ()
 {
@@ -41,7 +41,7 @@ void setup ()
 void loop()
 {
   // Cette boucle permet de choisir une nouvelle consigne de vitesse toutes les 3 secondes
-  if (millis() - compteur > 3000)
+  if (millis() - compteur > 6000)
   {
     compteur = millis();
     index = (index + 1) % 8;
@@ -51,8 +51,8 @@ void loop()
   
   // La consigne de vitesse est appliquée
 
-  // moteur4.controlMotorSpeed(consigne_vitesse);
-  moteur4.moveMotor(35);
+  moteur4.controlMotorSpeed(consigne_vitesse);
+  // moteur4.moveMotor(35);
   moteur4.displayStatus();
 
   delay(20);
