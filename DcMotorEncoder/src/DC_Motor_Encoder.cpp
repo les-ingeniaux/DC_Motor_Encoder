@@ -178,7 +178,7 @@ int DC_Motor_Encoder::getMotorPWM()
 	return _commande_PWM;
 }
 
-void DC_Motor_Encoder::doRevolutionsBlocking(int number_of_revs, int PWM)
+void DC_Motor_Encoder::doRevolutionsBlocking(float number_of_revs, int PWM)
 {
 	bool isFinished = false;
 	_totalTops = number_of_revs * _codeur_moteur->get_tops_per_tour();
@@ -194,7 +194,7 @@ void DC_Motor_Encoder::doRevolutionsBlocking(int number_of_revs, int PWM)
 	
 	while (!isFinished)
 	{
-		_remainingTops = abs(_totalTops - getMotorTops());
+		_remainingTops = _totalTops - abs(getMotorTops());
 
 		if (_remainingTops < _slowDownLimit)
 			reducedPWM = max(_min_PWM, (PWM * _remainingTops) / _slowDownLimit + (_min_PWM * (_slowDownLimit - _remainingTops)) / _slowDownLimit);
@@ -215,7 +215,7 @@ void DC_Motor_Encoder::doRevolutionsBlocking(int number_of_revs, int PWM)
 
 }
 
-void DC_Motor_Encoder::doRevolutionsSpeedBlocking(int number_of_revs, float speed_setpoint)
+void DC_Motor_Encoder::doRevolutionsSpeedBlocking(float number_of_revs, float speed_setpoint)
 {
 	// Probablement à utiliser avec une limite de vitesse maximum !
 	// Non testé de manière exhaustive
@@ -234,7 +234,7 @@ void DC_Motor_Encoder::doRevolutionsSpeedBlocking(int number_of_revs, float spee
 	
 	while (!isFinished)
 	{
-		_remainingTops = abs(_totalTops - getMotorTops());
+		_remainingTops = _totalTops - abs(getMotorTops());
 
 		if (_remainingTops < _slowDownLimit)
 			_reduced_speed_setpoint = max(_min_speed_setpoint, (speed_setpoint * _remainingTops) / _slowDownLimit + (_min_vitesse * (_slowDownLimit - _remainingTops)) / _slowDownLimit);
@@ -255,7 +255,7 @@ void DC_Motor_Encoder::doRevolutionsSpeedBlocking(int number_of_revs, float spee
 	stopMotor();
 }
 
-bool DC_Motor_Encoder::hasFinishedRevolutionsNonBlocking(int number_of_revs, float speed_setpoint)
+bool DC_Motor_Encoder::hasFinishedRevolutionsNonBlocking(float number_of_revs, float speed_setpoint)
 {
 	// bool isFinished = false;
 
@@ -274,7 +274,7 @@ bool DC_Motor_Encoder::hasFinishedRevolutionsNonBlocking(int number_of_revs, flo
 			_move_direction = false;		
 	}
 
-	_remainingTops = abs(_totalTops - getMotorTops());
+	_remainingTops = _totalTops - abs(getMotorTops());
 
 	if (_remainingTops < _slowDownLimit)
 		_reduced_speed_setpoint = max(_min_speed_setpoint, (speed_setpoint * _remainingTops) / _slowDownLimit + (_min_vitesse * (_slowDownLimit - _remainingTops)) / _slowDownLimit);
@@ -291,9 +291,63 @@ bool DC_Motor_Encoder::hasFinishedRevolutionsNonBlocking(int number_of_revs, flo
 	{
 		_isFinished = true;
 		_prev_speed_setpoint = 0;
+		
 	}
 	
 	return _isFinished;
+}
+
+void DC_Motor_Encoder::startMovementNonBlocking(float number_of_revs, float speed_setpoint)
+{
+	reset_encoder();
+	_isFinished = false;
+	_integral_error = 0.0;
+	_prev_speed_setpoint = 0.0;
+
+	// _initial_speed_setpoint = speed_setpoint;
+	_absolute_speed_setpoint = abs(speed_setpoint);
+
+	_totalTops = abs(number_of_revs) * _codeur_moteur->get_tops_per_tour();
+	_remainingTops = _totalTops;
+	_slowDownLimit = _codeur_moteur->get_tops_per_tour() * (_minSlowDownLimit + _slowDownFactor * _absolute_speed_setpoint /_max_vitesse);
+		
+	if (number_of_revs < 0)
+		_move_direction = false;		
+	else
+		_move_direction = true;
+
+
+}
+
+void DC_Motor_Encoder::updateMovementNonBlocking()
+{
+	if (_isFinished)
+		return;
+
+	_remainingTops = _totalTops - abs(getMotorTops());
+
+	if (_remainingTops < _slowDownLimit)
+		_reduced_speed_setpoint = max(_min_speed_setpoint, (_absolute_speed_setpoint * _remainingTops) / _slowDownLimit + (_min_speed_setpoint * (_slowDownLimit - _remainingTops)) / _slowDownLimit);
+	else
+		_reduced_speed_setpoint = _absolute_speed_setpoint;
+
+	if (_move_direction)
+		controlMotorSpeed(_reduced_speed_setpoint);
+	else
+		controlMotorSpeed(-_reduced_speed_setpoint);
+
+	if (_remainingTops <= _tolerance)
+	{
+		_isFinished = true;
+		_prev_speed_setpoint = 0;
+		stopMotor();
+	}
+	
+}
+
+bool DC_Motor_Encoder::isMovementNonBlockingFinished()
+{
+	return _isFinished;		
 }
 
 void DC_Motor_Encoder::displayStatus()

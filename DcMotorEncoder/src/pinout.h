@@ -42,22 +42,22 @@ constexpr int  encoder_mot2_inversion = true;
 //constexpr int  stby = 25;
 
 //moteur PAMI 2_
-constexpr int  mot_PAMI_2_plus = 8;
-constexpr int  mot_PAMI_2_moins = 12;
+constexpr int  mot_PAMI_2_plus = 12;
+constexpr int  mot_PAMI_2_moins = 8;
 constexpr int  mot_PAMI_2_pwm = 11;
 constexpr int  mot_PAMI_2_enable = false;
 constexpr int  encoderA_mot_PAMI_2 = 3;
 constexpr int  encoderB_mot_PAMI_2 = 5;
-constexpr int  encoder_mot_PAMI_2_inversion = true;
+constexpr int  encoder_mot_PAMI_2_inversion = false;
 //STBY
 
 //moteur PAMI 1_
-constexpr int  mot_PAMI_1_plus = 7;
-constexpr int  mot_PAMI_1_moins = 4;
+constexpr int  mot_PAMI_1_plus = 4;
+constexpr int  mot_PAMI_1_moins = 7;
 constexpr int  mot_PAMI_1_pwm = 9;
 constexpr int  mot_PAMI_1_enable = false;
 constexpr int  encoderA_mot_PAMI_1 = 2;
 constexpr int  encoderB_mot_PAMI_1 = 6;
-constexpr int  encoder_mot_PAMI_1_inversion = false;
+constexpr int  encoder_mot_PAMI_1_inversion = true;
 
 #endif
