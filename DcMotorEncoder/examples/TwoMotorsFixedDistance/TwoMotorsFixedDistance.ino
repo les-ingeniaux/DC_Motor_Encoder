@@ -50,17 +50,17 @@ void loop()
   // La fonction est non-bloquante, c'est à dire qu'on peut faire d'autres actions pendant que les moteurs tournent
   // (à l'intérieur de la boucle while)
 
-  float nbRevs = 5;
+  float nbRevs = -5;
   float speed_setpoint = 2.0;
 
   moteur1.startMovementNonBlocking(nbRevs, speed_setpoint);
   moteur2.startMovementNonBlocking(nbRevs, speed_setpoint);
 
-  while (!moteur1.isMovementNonBlockingFinished()$ && !moteur2.isMovementNonBlockingFinished())
+  while (!moteur1.isMovementNonBlockingFinished() && !moteur2.isMovementNonBlockingFinished())
   {
     moteur1.updateMovementNonBlocking();
     moteur2.updateMovementNonBlocking();
-    moteur1.displayStatus();
+    // moteur1.displayStatus();
     delay(20);
   }
 
@@ -69,5 +69,23 @@ void loop()
 
   delay(3000);
   
+  nbRevs = 5;
+  speed_setpoint = 2.0;
+
+  moteur1.startMovementNonBlocking(nbRevs, speed_setpoint);
+  moteur2.startMovementNonBlocking(nbRevs, speed_setpoint);
+
+  while (!moteur1.isMovementNonBlockingFinished() && !moteur2.isMovementNonBlockingFinished())
+  {
+    moteur1.updateMovementNonBlocking();
+    moteur2.updateMovementNonBlocking();
+    // moteur1.displayStatus();
+    delay(20);
+  }
+
+  moteur1.stopMotor();
+  moteur2.stopMotor();
+
+  delay(3000);  
 
 }
